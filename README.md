@@ -122,4 +122,8 @@ EASY-account.
 
 ### ContinuedDeposit.java
 
-TODO
+To run the `ContinuedDeposit` example, execute the following command, of course after filling in the username and password of your SWORD-enabled
+EASY-account. This example takes one extra argument: the number of bytes in one chunk.
+
+    java -cp bin/easy-sword2-dans-examples.jar nl.knaw.dans.easy.sword2examples.ContinuedDeposit \
+        examples/example.zip https://act.easy.dans.knaw.nl/sword2/collection/1 <username> <password> <chunk-size>
