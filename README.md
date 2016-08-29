@@ -127,3 +127,18 @@ EASY-account. This example takes one extra argument: the number of bytes in one 
 
     java -cp bin/easy-sword2-dans-examples.jar nl.knaw.dans.easy.sword2examples.ContinuedDeposit \
         examples/example.zip https://act.easy.dans.knaw.nl/sword2/collection/1 <username> <password> <chunk-size>
+
+
+### Running from the Project Directory
+
+Alternatively, you may run the example programs from the command line in the maven project. Open a command line in the root
+of the maven project and then type the following (for `SimpleDeposit`): 
+
+    mvn clean install
+    mvn dependency:copy-dependencies
+    java -cp target/dependency/*:target/easy-sword2-dans-examples.jar nl.knaw.dans.easy.sword2examples.SimpleDeposit \
+       src/test/resources/examples/example.zip https://act.easy.dans.knaw.nl/sword2/collection/1 <username> <password>
+
+This of course assumes that you have first zipped the example bag to the `src/test/resources/examples` sub-directory.
+
+
