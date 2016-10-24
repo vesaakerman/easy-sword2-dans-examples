@@ -85,9 +85,12 @@ To zip the example bag, `cd` to the `examples` subdirectory and execute the foll
 
     zip -r example.zip example-bag
 
-Make sure that the result zip contains a directory called `example-bag` at the top of its hierarchy. The output of a `zipinfo` should be similar to this: 
-
+Make sure that the result zip contains a directory called `example-bag` at the top of its hierarchy. The output of
+ 
     zipinfo examples/example.zip
+
+should be similar to this: 
+
     Archive:  examples/example.zip   4293 bytes   13 files
     drwxr-xr-x  3.0 unx        0 bx stor  8-Jul-16 13:22 example-bag/
     -rw-r--r--  3.0 unx       63 tx defN  6-Jul-16 16:18 example-bag/bag-info.txt
@@ -129,6 +132,16 @@ EASY-account. This example takes one extra argument: the number of bytes in one 
         examples/example.zip https://act.easy.dans.knaw.nl/sword2/collection/1 <username> <password> <chunk-size>
 
 
+### A bag with fetch.txt
+
+A bag may contain a file called `fetch.txt`, which contains references to files that belong to this bag but are not present. To run an example
+with this kind of bag, zip `example-bag-with-fetch` to `example.zip` and execute the following command (the same as for `SimpleDeposit`),
+of course after filling in the username and password of your SWORD-enabled EASY-account.
+                                                                                                      
+    java -cp bin/easy-sword2-dans-examples.jar nl.knaw.dans.easy.sword2examples.SimpleDeposit \
+        examples/example.zip https://act.easy.dans.knaw.nl/sword2/collection/1 <username> <password>
+
+
 ### Running from the Project Directory
 
 Alternatively, you may run the example programs from the command line in the maven project. Open a command line in the root
@@ -136,7 +149,7 @@ of the maven project and then type the following (for `SimpleDeposit`):
 
     mvn clean install
     mvn dependency:copy-dependencies
-    java -cp target/dependency/*:target/easy-sword2-dans-examples.jar nl.knaw.dans.easy.sword2examples.SimpleDeposit \
+    java -cp "target/dependency/*:target/easy-sword2-dans-examples.jar" nl.knaw.dans.easy.sword2examples.SimpleDeposit \
        src/test/resources/examples/example.zip https://act.easy.dans.knaw.nl/sword2/collection/1 <username> <password>
 
 This of course assumes that you have first zipped the example bag to the `src/test/resources/examples` sub-directory.
