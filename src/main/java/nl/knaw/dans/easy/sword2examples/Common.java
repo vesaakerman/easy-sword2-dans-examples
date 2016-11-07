@@ -15,6 +15,12 @@
  */
 package nl.knaw.dans.easy.sword2examples;
 
+import org.apache.abdera.Abdera;
+import org.apache.abdera.model.Category;
+import org.apache.abdera.model.Document;
+import org.apache.abdera.model.Element;
+import org.apache.abdera.model.Feed;
+import org.apache.abdera.parser.Parser;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
@@ -30,17 +36,14 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.xml.sax.InputSource;
 
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathFactory;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.net.URI;
 import java.security.DigestInputStream;
+import java.util.List;
 
 public class Common {
     static final String BAGIT_URI = "http://purl.org/net/sword/package/BagIt";
@@ -51,7 +54,7 @@ public class Common {
      * @param entity
      *        the http entity object
      * @return the entire http entity as a string
-     * @throws IOException
+     * @throws IOException if an I/O error occurs
      */
     public static String readEntityAsString(HttpEntity entity) throws IOException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -59,47 +62,47 @@ public class Common {
         return new String(bos.toByteArray(), "UTF-8");
     }
 
-    /**
-     * Returns the result of evaluating the XPath expression <code>expr</code> on the XML code in the string <code>xml</code>
-     *
-     * @param xml
-     *        the XML to query
-     * @param expr
-     *        the XPath expression
-     * @return the result as a string
-     * @throws Exception
-     */
-    public static String getStringFromXml(String xml, String expr) throws Exception {
-        InputSource xmlSource = new InputSource(new StringReader(xml));
-        XPathFactory xpathFactory = XPathFactory.newInstance();
-        XPath xpath = xpathFactory.newXPath();
-        return (String) xpath.evaluate(expr, xmlSource, XPathConstants.STRING);
+    public static <T extends Element> T parse(String text) {
+        Abdera abdera = Abdera.getInstance();
+        Parser parser = abdera.getParser();
+        Document<T> receipt = parser.parse(new StringReader(text));
+        return receipt.getRoot();
     }
 
-    static void trackDeposit(CloseableHttpClient http, URI statIri) throws Exception {
+    static void trackDeposit(CloseableHttpClient http, URI statUri) throws Exception {
         CloseableHttpResponse response;
         String bodyText;
         System.out.println("Start polling Stat-IRI for the current status of the deposit, waiting 10 seconds before every request ...");
-        String state = null;
         while (true) {
             Thread.sleep(10000);
             System.out.print("Checking deposit status ... ");
-            response = http.execute(new HttpGet(statIri));
+            response = http.execute(new HttpGet(statUri));
             bodyText = readEntityAsString(response.getEntity());
-            state = getStringFromXml(bodyText,
-                    "//*[local-name() = 'category' and @scheme = 'http://purl.org/net/sword/terms/state' and @label = 'State']/@term");
-            System.out.println(state);
-            if (state.equals("INVALID") || state.equals("REJECTED") || state.equals("FAILED")) {
-                System.err.println("FAILURE. Complete statement follows:");
-                System.err.println(bodyText);
-                System.exit(3);
-            } else if (state.equals("ARCHIVED")) {
-                System.out.println("SUCCESS. Deposit has been archived at: "
-                        + getStringFromXml(bodyText,
-                                "//*[local-name() = 'category' and @scheme = 'http://purl.org/net/sword/terms/state' and @label = 'State']"));
-                System.out.println("Complete statement follows:");
-                System.out.println(bodyText);
-                System.exit(0);
+            Feed statement = parse(bodyText);
+            List<Category> states = statement.getCategories("http://purl.org/net/sword/terms/state");
+            if (states.isEmpty()) {
+                System.err.println("ERROR: NO STATE FOUND");
+                System.exit(1);
+            }
+            else if (states.size() > 1) {
+                System.err.println("ERROR: FOUND TOO MANY STATES (" + states.size() + "). CAN ONLY HANDLE ONE");
+                System.exit(1);
+            }
+            else {
+                String state = states.get(0).getTerm();
+                System.out.println(state);
+                if (state.equals("INVALID") || state.equals("REJECTED") || state.equals("FAILED")) {
+                    System.err.println("FAILURE. Complete statement follows:");
+                    System.err.println(bodyText);
+                    System.exit(3);
+                }
+                else if (state.equals("ARCHIVED")) {
+                    String stateText = states.get(0).getText();
+                    System.out.println("SUCCESS. Deposit has been archived at: " + stateText);
+                    System.out.println("Complete statement follows:");
+                    System.out.println(bodyText);
+                    System.exit(0);
+                }
             }
         }
     }
@@ -112,19 +115,19 @@ public class Common {
         return bos.toByteArray();
     }
 
-    public static CloseableHttpClient createHttpClient(URI iri, String uid, String pw) {
+    public static CloseableHttpClient createHttpClient(URI uri, String uid, String pw) {
         BasicCredentialsProvider credsProv = new BasicCredentialsProvider();
-        credsProv.setCredentials(new AuthScope(iri.getHost(), iri.getPort()), new UsernamePasswordCredentials(uid, pw));
+        credsProv.setCredentials(new AuthScope(uri.getHost(), uri.getPort()), new UsernamePasswordCredentials(uid, pw));
         return HttpClients.custom().setDefaultCredentialsProvider(credsProv).build();
     }
 
-    public static CloseableHttpResponse sendChunk(DigestInputStream dis, int size, String method, URI iri, String filename, String mimeType, CloseableHttpClient http, boolean inProgress) throws Exception {
-        // System.out.println(String.format("Sending chunk to %s, filename = %s, chunk size = %d, MIME-Type = %s, In-Progress = %s ... ", iri.toString(), filename, size, mimeType, Boolean.toString(inProgress)));
+    public static CloseableHttpResponse sendChunk(DigestInputStream dis, int size, String method, URI uri, String filename, String mimeType, CloseableHttpClient http, boolean inProgress) throws Exception {
+        // System.out.println(String.format("Sending chunk to %s, filename = %s, chunk size = %d, MIME-Type = %s, In-Progress = %s ... ", uri.toString(), filename, size, mimeType, Boolean.toString(inProgress)));
         byte[] chunk = readChunk(dis, size);
         String md5 = new String(Hex.encodeHex(dis.getMessageDigest().digest()));
-        HttpUriRequest request = RequestBuilder.create(method).setUri(iri).setConfig(RequestConfig.custom()
+        HttpUriRequest request = RequestBuilder.create(method).setUri(uri).setConfig(RequestConfig.custom()
         /*
-         * When using an HTTPS-connection this EXPECT-CONTINUE must be enabled, otherwise buffer overflow may follow
+         * When using an HTTPS-connection EXPECT-CONTINUE must be enabled, otherwise buffer overflow may follow
          */
                 .setExpectContinueEnabled(true).build()) //
                     .addHeader("Content-Disposition", String.format("attachment; filename=%s", filename)) //
