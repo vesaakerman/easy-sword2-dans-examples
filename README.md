@@ -152,6 +152,6 @@ of the maven project and then type the following (for `SimpleDeposit`):
     java -cp "target/dependency/*:target/easy-sword2-dans-examples.jar" nl.knaw.dans.easy.sword2examples.SimpleDeposit \
        src/main/resources/examples/example.zip https://act.easy.dans.knaw.nl/sword2/collection/1 <username> <password>
 
-This of course assumes that you have first zipped the example bag to the `src/test/resources/examples` sub-directory.
+This of course assumes that you have first zipped the example bag to the `src/main/resources/examples` sub-directory.
 
 
