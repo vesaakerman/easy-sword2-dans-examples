@@ -1,0 +1,1 @@
+6b88f9dcfdf15299f87997408fc613fb  data/data-file.txt

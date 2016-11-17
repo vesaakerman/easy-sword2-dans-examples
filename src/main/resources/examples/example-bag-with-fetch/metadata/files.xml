@@ -1,44 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <files xmlns:dcterms="http://purl.org/dc/terms/">
 <file filepath="data/quicksort.hs">
-        <dcterms:identifier>UUID</dcterms:identifier>
-        <dcterms:title>friendly name</dcterms:title>
-        <dcterms:alternative>friendly name</dcterms:alternative>
-        <dcterms:description>caption</dcterms:description>
         <dcterms:format>text/plain</dcterms:format>
-        <dcterms:created>date created</dcterms:created>
     </file>
     <file filepath="data/path/to/file.txt">
-        <dcterms:identifier>UUID</dcterms:identifier>
-        <dcterms:title>friendly name</dcterms:title>
-        <dcterms:alternative>friendly name</dcterms:alternative>
-        <dcterms:description>caption</dcterms:description>
         <dcterms:format>text/plain</dcterms:format>
-        <dcterms:created>date created</dcterms:created>
     </file>
     <file filepath="data/path/to/folder/with/empty-file.txt">
-        <dcterms:identifier>UUID</dcterms:identifier>
-        <dcterms:title>friendly name</dcterms:title>
-        <dcterms:alternative>friendly name</dcterms:alternative>
-        <dcterms:description>caption</dcterms:description>
         <dcterms:format>text/plain</dcterms:format>
-        <dcterms:created>date created</dcterms:created>
     </file>
     <file filepath="data/path/bagit_spec.pdf">
-        <dcterms:identifier>UUID</dcterms:identifier>
-        <dcterms:title>friendly name</dcterms:title>
-        <dcterms:alternative>friendly name</dcterms:alternative>
-        <dcterms:description>caption</dcterms:description>
-        <dcterms:format>text/plain</dcterms:format>
-        <dcterms:created>date created</dcterms:created>
+        <dcterms:format>application/pdf</dcterms:format>
     </file>
     <file filepath="data/other/path/to/LorumIpsum.md">
-        <dcterms:identifier>UUID</dcterms:identifier>
-        <dcterms:title>friendly name</dcterms:title>
-        <dcterms:alternative>friendly name</dcterms:alternative>
-        <dcterms:description>caption</dcterms:description>
         <dcterms:format>text/plain</dcterms:format>
-        <dcterms:created>date created</dcterms:created>
     </file>
 </files>
 
