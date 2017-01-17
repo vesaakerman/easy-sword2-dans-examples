@@ -5,31 +5,36 @@
         xmlns:dcterms="http://purl.org/dc/terms/"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xmlns:id-type="http://easy.dans.knaw.nl/schemas/vocab/identifier-type/">
-    <ddm:profile>
-        <dc:title>
-            A small dataset deposited through SWORD v2.0.
-        </dc:title>
+	<ddm:profile>
+        <dc:title>A dataset that is under embargo until 2030</dc:title>
         <dcterms:description>
-            Contains only one data file.
+            A sample dataset that is under embargo until 2030
+            =================================================
 
-            The DOI was provided by the depositor, so this will only
-            be accepted for an account that is configured for external DOIs.
+            Those researchers take forever!
+
         </dcterms:description>
         <dcx-dai:creatorDetails>
             <dcx-dai:author>
-                <dcx-dai:titles>Dr</dcx-dai:titles>
+                <dcx-dai:titles></dcx-dai:titles>
                 <dcx-dai:initials>I</dcx-dai:initials>
+                <dcx-dai:insertions></dcx-dai:insertions>
                 <dcx-dai:surname>Lastname</dcx-dai:surname>
                 <dcx-dai:organization>
                     <dcx-dai:name xml:lang="en">Example Org</dcx-dai:name>
                 </dcx-dai:organization>
             </dcx-dai:author>
-        </dcx-dai:creatorDetails>
-        <ddm:created>2016-11-11</ddm:created>
-        <ddm:audience>D41500</ddm:audience>
-        <ddm:accessRights>NO_ACCESS</ddm:accessRights>
-    </ddm:profile>
-    <ddm:dcmiMetadata>
+        </dcx-dai:creatorDetails>        
+        <ddm:created>2015-09-09</ddm:created>
+	<ddm:audience>D23320</ddm:audience>
+	<ddm:accessRights>NO_ACCESS</ddm:accessRights>
+	</ddm:profile>
+	<ddm:dcmiMetadata>
+        <dcterms:hasVersion>1.1</dcterms:hasVersion>
+        <dcterms:modified>2015-09-08</dcterms:modified>
+        <dcterms:available>2030-01-01</dcterms:available>
         <dcterms:identifier xsi:type="id-type:DOI">10.5072/test-other-access-doi</dcterms:identifier>
+        <dcterms:license xsi:type="dcterms:URI">http://opensource.org/licenses/MIT</dcterms:license>
+        <dcterms:rightsHolder>I Lastname</dcterms:rightsHolder>
     </ddm:dcmiMetadata>
 </ddm:DDM>
