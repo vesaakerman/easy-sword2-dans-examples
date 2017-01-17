@@ -106,6 +106,10 @@ should be similar to this:
     -rw-r--r--  3.0 unx      881 tx defN  6-Jul-16 16:18 example-bag/metadata/files.xml
     -rw-r--r--  3.0 unx      250 tx defN  6-Jul-16 16:18 example-bag/tagmanifest-md5.txt
     13 files, 5222 bytes uncompressed, 1957 bytes compressed:  62.5%
+    
+For your convenience the shell script `zip-examples.sh` is provided. It will delete any zip files
+created earlier and rezip the examples in the folders `src/main/resources/examples` and 
+those in `src/main/resources/invalid-examples`.
 
 ### Changing the Example Bag
 
