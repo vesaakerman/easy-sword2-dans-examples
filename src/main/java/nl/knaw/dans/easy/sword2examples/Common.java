@@ -19,6 +19,7 @@ import org.apache.abdera.Abdera;
 import org.apache.abdera.model.Category;
 import org.apache.abdera.model.Document;
 import org.apache.abdera.model.Element;
+import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.Feed;
 import org.apache.abdera.parser.Parser;
 import org.apache.commons.codec.binary.Hex;
@@ -44,6 +45,7 @@ import java.io.StringReader;
 import java.net.URI;
 import java.security.DigestInputStream;
 import java.util.List;
+import java.util.Map;
 
 public class Common {
     static final String BAGIT_URI = "http://purl.org/net/sword/package/BagIt";
@@ -97,8 +99,13 @@ public class Common {
                     System.exit(3);
                 }
                 else if (state.equals("ARCHIVED")) {
+                    List<Entry> entries = statement.getEntries();
+                    System.out.print("SUCCESS. ");
+                    if (entries.size() == 1) {
+                        System.out.print("Deposit has been archived at: <" + entries.get(0).getId() + ">. ");
+                    }
                     String stateText = states.get(0).getText();
-                    System.out.println("SUCCESS. Deposit has been archived at: " + stateText);
+                    System.out.println("Dataset landing page will be located at: " + stateText);
                     System.out.println("Complete statement follows:");
                     System.out.println(bodyText);
                     System.exit(0);
