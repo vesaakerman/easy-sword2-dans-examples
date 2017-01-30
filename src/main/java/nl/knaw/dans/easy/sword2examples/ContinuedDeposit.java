@@ -51,7 +51,6 @@ public class ContinuedDeposit {
         CloseableHttpClient http = Common.createHttpClient(colIri.toURI(), uid, pw);
         CloseableHttpResponse response = Common.sendChunk(dis, chunkSize, "POST", colIri.toURI(),  "bag.zip.1", "application/octet-stream", http, chunkSize < bag.length());
 
-
         // 3. Check the response. If transfer corrupt (MD5 doesn't check out), report and exit.
         String bodyText = Common.readEntityAsString(response.getEntity());
         if (response.getStatusLine().getStatusCode() != 201) {
