@@ -26,6 +26,7 @@ import java.io.FileInputStream;
 import java.net.URI;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
+import java.util.UUID;
 
 public class SimpleDeposit {
 
@@ -37,25 +38,34 @@ public class SimpleDeposit {
      */
     public static void main(String[] args) throws Exception {
         if (args.length != 4) {
-            System.err.println("Usage: java nl.knaw.dans.easy.sword2examples.SimpleDeposit <bag filename> <Col-IRI> <EASY uid> <EASY passwd>");
+            System.err.println("Usage: java nl.knaw.dans.easy.sword2examples.SimpleDeposit <Col-IRI> <EASY uid> <EASY passwd> <bag dirname>");
             System.exit(1);
         }
 
-        // 0. Read command line arguments
-        final String bagFileName = args[0];
-        final IRI colIri = new IRI(args[1]);
-        final String uid = args[2];
-        final String pw = args[3];
+        // Read command line arguments
+        final IRI colIri = new IRI(args[0]);
+        final String uid = args[1];
+        final String pw = args[2];
+        final String bagDirName = args[3];
+
+        File tempCopy = Common.copyToTarget(new File(bagDirName));
+        depositPackage(tempCopy, colIri, uid, pw);
+    }
+
+    public static URI depositPackage(File bagDir, IRI colIri, String uid, String pw) throws Exception {
+        // 0. Zip the bagDir
+        File zipFile = new File(bagDir.getAbsolutePath() + ".zip");
+        zipFile.delete();
+        Common.zipDirectory(bagDir, zipFile);
 
         // 1. Set up stream for calculating MD5
-        File bag = new File(bagFileName);
-        FileInputStream fis = new FileInputStream(bag);
+        FileInputStream fis = new FileInputStream(zipFile);
         MessageDigest md = MessageDigest.getInstance("MD5");
         DigestInputStream dis = new DigestInputStream(fis, md);
 
         // 2. Post entire bag to Col-IRI
         CloseableHttpClient http = Common.createHttpClient(colIri.toURI(), uid, pw);
-        CloseableHttpResponse response = Common.sendChunk(dis, (int) bag.length(), "POST", colIri.toURI(), "bag.zip", "application/zip", http, false);
+        CloseableHttpResponse response = Common.sendChunk(dis, (int) zipFile.length(), "POST", colIri.toURI(), "bag.zip", "application/zip", http, false);
 
         // 3. Check the response. If transfer corrupt (MD5 doesn't check out), report and exit.
         String bodyText = Common.readEntityAsString(response.getEntity());
@@ -77,7 +87,6 @@ public class SimpleDeposit {
 
         // 5. Check statement every ten seconds (a bit too frantic, but okay for this test). If status changes:
         // report new status. If status is an error (INVALID, REJECTED, FAILED) or ARCHIVED: exit.
-        Common.trackDeposit(http, statIri.toURI());
+        return Common.trackDeposit(http, statIri.toURI());
     }
-
 }

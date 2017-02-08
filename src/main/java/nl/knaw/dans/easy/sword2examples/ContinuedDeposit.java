@@ -30,26 +30,34 @@ import java.security.MessageDigest;
 public class ContinuedDeposit {
     public static void main(String[] args) throws Exception {
         if (args.length != 5) {
-            System.err.println("Usage: java nl.knaw.dans.easy.sword2examples.ContinuedDeposit <bag filename> <Col-IRI> <EASY uid> <EASY passwd> <chunk size>");
+            System.err.println("Usage: java nl.knaw.dans.easy.sword2examples.ContinuedDeposit <Col-IRI> <EASY uid> <EASY passwd> <chunk size> <bag dirname>");
             System.exit(1);
         }
 
         // 0. Read command line arguments
-        final String bagFileName = args[0];
-        final IRI colIri = new IRI(args[1]);
-        final String uid = args[2];
-        final String pw = args[3];
-        final int chunkSize = Integer.parseInt(args[4]);
+        final IRI colIri = new IRI(args[0]);
+        final String uid = args[1];
+        final String pw = args[2];
+        final int chunkSize = Integer.parseInt(args[3]);
+        final String bagFileName = args[4];
+
+        depositPackage(new File(bagFileName), colIri, uid, pw, chunkSize);
+    }
+
+    public static URI depositPackage(File bagDir, IRI colIri, String uid, String pw, int chunkSize) throws Exception {
+        // 0. Zip the bagDir
+        File zipFile = new File(bagDir.getAbsolutePath() + ".zip");
+        zipFile.delete();
+        Common.zipDirectory(bagDir, zipFile);
 
         // 1. Set up stream for calculating MD5
-        File bag = new File(bagFileName);
-        FileInputStream fis = new FileInputStream(bag);
+        FileInputStream fis = new FileInputStream(zipFile);
         MessageDigest md = MessageDigest.getInstance("MD5");
         DigestInputStream dis = new DigestInputStream(fis, md);
 
         // 2. Post first chunk bag to Col-IRI
         CloseableHttpClient http = Common.createHttpClient(colIri.toURI(), uid, pw);
-        CloseableHttpResponse response = Common.sendChunk(dis, chunkSize, "POST", colIri.toURI(),  "bag.zip.1", "application/octet-stream", http, chunkSize < bag.length());
+        CloseableHttpResponse response = Common.sendChunk(dis, chunkSize, "POST", colIri.toURI(),  "bag.zip.1", "application/octet-stream", http, chunkSize < zipFile.length());
 
         // 3. Check the response. If transfer corrupt (MD5 doesn't check out), report and exit.
         String bodyText = Common.readEntityAsString(response.getEntity());
@@ -66,7 +74,7 @@ public class ContinuedDeposit {
         Link seIriLink = receipt.getLink("edit");
         URI seIri = seIriLink.getHref().toURI();
 
-        int remaining = (int) bag.length() - chunkSize;
+        int remaining = (int) zipFile.length() - chunkSize;
         int count = 2;
         while(remaining > 0) {
             System.out.print(String.format("POST-ing chunk of %d bytes to SE-IRI (remaining: %d) ... ", chunkSize, remaining));
@@ -91,6 +99,6 @@ public class ContinuedDeposit {
 
         // 5. Check statement every ten seconds (a bit too frantic, but okay for this test). If status changes:
         // report new status. If status is an error (INVALID, REJECTED, FAILED) or ARCHIVED: exit.
-        Common.trackDeposit(http, statIri.toURI());
+        return Common.trackDeposit(http, statIri.toURI());
     }
 }

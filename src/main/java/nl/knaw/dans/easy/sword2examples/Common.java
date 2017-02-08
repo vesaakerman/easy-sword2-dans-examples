@@ -15,6 +15,13 @@
  */
 package nl.knaw.dans.easy.sword2examples;
 
+import gov.loc.repository.bagit.Bag;
+import gov.loc.repository.bagit.BagFactory;
+import gov.loc.repository.bagit.BagInfoTxt;
+import gov.loc.repository.bagit.transformer.impl.TagManifestCompleter;
+import gov.loc.repository.bagit.writer.impl.FileSystemWriter;
+import net.lingala.zip4j.core.ZipFile;
+import net.lingala.zip4j.model.ZipParameters;
 import org.apache.abdera.Abdera;
 import org.apache.abdera.model.Category;
 import org.apache.abdera.model.Document;
@@ -23,6 +30,7 @@ import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.Feed;
 import org.apache.abdera.parser.Parser;
 import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.auth.AuthScope;
@@ -39,6 +47,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
@@ -49,6 +58,7 @@ import java.util.Map;
 
 public class Common {
     static final String BAGIT_URI = "http://purl.org/net/sword/package/BagIt";
+    static final BagFactory bagFactory = new BagFactory();
 
     /**
      * Assumes the entity is UTF-8 encoded text and reads it into a String.
@@ -71,7 +81,7 @@ public class Common {
         return receipt.getRoot();
     }
 
-    static void trackDeposit(CloseableHttpClient http, URI statUri) throws Exception {
+    static URI trackDeposit(CloseableHttpClient http, URI statUri) throws Exception {
         CloseableHttpResponse response;
         String bodyText;
         System.out.println("Start polling Stat-IRI for the current status of the deposit, waiting 10 seconds before every request ...");
@@ -108,7 +118,7 @@ public class Common {
                     System.out.println("Dataset landing page will be located at: " + stateText);
                     System.out.println("Complete statement follows:");
                     System.out.println(bodyText);
-                    System.exit(0);
+                    return entries.get(0).getId().toURI();
                 }
             }
         }
@@ -146,5 +156,32 @@ public class Common {
         CloseableHttpResponse response = http.execute(request);
         // System.out.println("Response received.");
         return response;
+    }
+
+    public static void setBagIsVersionOf(File bagDir, URI versionOfUri) throws Exception {
+        Bag bag = bagFactory.createBag(bagDir);
+        BagInfoTxt info = bag.getBagInfoTxt();
+        info.put("Is-Version-Of", versionOfUri.toASCIIString());
+
+        // bag-info.txt's checksums have changed, so we need to update the tag manifests.
+        TagManifestCompleter completer = new TagManifestCompleter(bagFactory);
+        completer.complete(bag);
+        FileSystemWriter writer = new FileSystemWriter(bagFactory);
+        writer.setTagFilesOnly(true);
+        bag.write(writer, bagDir);
+    }
+
+    public static void zipDirectory(File dir, File zipFile) throws Exception {
+        if(zipFile.exists()) zipFile.delete();
+        ZipFile zf = new ZipFile(zipFile);
+        ZipParameters parameters = new ZipParameters();
+        zf.addFolder(dir, parameters);
+    }
+
+    public static File copyToTarget(File dir) throws Exception {
+        File dirInTarget = new File("target", dir.getName());
+        FileUtils.deleteQuietly(dirInTarget);
+        FileUtils.copyDirectory(dir, dirInTarget);
+        return dirInTarget;
     }
 }

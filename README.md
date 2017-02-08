@@ -8,7 +8,7 @@ About These Examples
 --------------------
 
 The examples in this project show how to implement a client in Java that interacts with the
-EASY SWORD2 Desposit service at DANS. For a more detailed overview of the functionality of this
+EASY SWORD2 Deposit service at DANS. For a more detailed overview of the functionality of this
 service see [easy-sword2]. This document provides details about the particular set-up at DANS
 and how to use it.
 
@@ -54,21 +54,14 @@ Deposit Packaging
 -----------------
 
 The [easy-sword2] service requires deposits to be sent as zipped bags (see [BagIt]). The EASY archive adds some
-extra requirements:
-
-* Apart from the `data` directory there must be a `metadata` directory
-* `metadata` must contain two files:
-    * `dataset.xml` &mdash; a valid [DDM] file describing the dataset as a whole
-    * `files.xml` &mdash; an xml file describing the individual files (TODO: document exact format).
-    
-For an example, see `src/main/resources/examples/example-bag` in this project.
+extra requirements. These are documented on the [EASY SWORDv2 deposit documentation page].
   
+[EASY SWORDv2 deposit documentation page]: https://easy.dans.knaw.nl/doc/sword2.html
 [BagIt]: https://datatracker.ietf.org/doc/draft-kunze-bagit
-[DDM]: https://easy.dans.knaw.nl/schemas/md/2016/ddm.xsd
 
 
-Running The Example
--------------------
+Running The Examples
+--------------------
 
 You can run the example clients either from the command line or in your IDE. Each example contains a class with a `main` method
 and expects certain arguments. To run from the command line, after building the project, unpack the resulting `tar.gz` file, for
@@ -79,39 +72,11 @@ example:
 This will create a new directory called `~/Downloads/easy-sword2-dans-examples-1.x-SNAPSHOT`. Change directory to this directory
 before executing the commands below.
 
-### Zipping the Example Bag
+The examples take one or more directories as input parameters. These directories should be in the format specified by BagIt. The code 
+copies each directory to the `target`-folder of the project, zips it and sends it to the specified SWORDv2 service. The copying step 
+has been built in because in some examples the bag must be modified before it is sent.
 
-To zip the example bag, `cd` to the `examples` subdirectory and execute the following command:
-
-    zip -r example.zip example-bag
-
-Make sure that the result zip contains a directory called `example-bag` at the top of its hierarchy. The output of
- 
-    zipinfo examples/example.zip
-
-should be similar to this: 
-
-    Archive:  examples/example.zip   4293 bytes   13 files
-    drwxr-xr-x  3.0 unx        0 bx stor  8-Jul-16 13:22 example-bag/
-    -rw-r--r--  3.0 unx       63 tx defN  6-Jul-16 16:18 example-bag/bag-info.txt
-    -rw-r--r--  3.0 unx       55 tx stor  6-Jul-16 16:18 example-bag/bagit.txt
-    drwxr-xr-x  3.0 unx        0 bx stor  8-Jul-16 13:22 example-bag/data/
-    drwxr-xr-x  3.0 unx        0 bx stor  8-Jul-16 13:22 example-bag/data/path/
-    drwxr-xr-x  3.0 unx        0 bx stor  8-Jul-16 13:22 example-bag/data/path/to/
-    -rw-r--r--  3.0 unx     1935 tx defN  6-Jul-16 16:18 example-bag/data/path/to/file.txt
-    -rw-r--r--  3.0 unx      202 tx defN  6-Jul-16 16:18 example-bag/data/quicksort.hs
-    -rw-r--r--  3.0 unx      105 tx defN  6-Jul-16 16:18 example-bag/manifest-md5.txt
-    drwxr-xr-x  3.0 unx        0 bx stor  8-Jul-16 13:22 example-bag/metadata/
-    -rw-r--r--  3.0 unx     1731 tx defN  6-Jul-16 16:18 example-bag/metadata/dataset.xml
-    -rw-r--r--  3.0 unx      881 tx defN  6-Jul-16 16:18 example-bag/metadata/files.xml
-    -rw-r--r--  3.0 unx      250 tx defN  6-Jul-16 16:18 example-bag/tagmanifest-md5.txt
-    13 files, 5222 bytes uncompressed, 1957 bytes compressed:  62.5%
-    
-For your convenience the shell script `zip-examples.sh` is provided. It will delete any zip files
-created earlier and rezip the examples in the folders `src/main/resources/examples` and 
-those in `src/main/resources/invalid-examples`.
-
-### Changing the Example Bag
+### Changing the Example Bags
 
 To change the bag or make your own bags see [this wiki page].
 
@@ -121,10 +86,10 @@ To change the bag or make your own bags see [this wiki page].
 ### SimpleDeposit.java
 
 To run the `SimpleDeposit` example, execute the following command, of course after filling in the username and password of your SWORD-enabled
-EASY-account.
+EASY-account. For example:
 
     java -cp bin/easy-sword2-dans-examples.jar nl.knaw.dans.easy.sword2examples.SimpleDeposit \
-        examples/example.zip https://act.easy.dans.knaw.nl/sword2/collection/1 <username> <password>
+        https://act.easy.dans.knaw.nl/sword2/collection/1 myuser mypassword src/main/resources/examples/medium
 
 
 ### ContinuedDeposit.java
@@ -133,29 +98,27 @@ To run the `ContinuedDeposit` example, execute the following command, of course 
 EASY-account. This example takes one extra argument: the number of bytes in one chunk.
 
     java -cp bin/easy-sword2-dans-examples.jar nl.knaw.dans.easy.sword2examples.ContinuedDeposit \
-        examples/example.zip https://act.easy.dans.knaw.nl/sword2/collection/1 <username> <password> <chunk-size>
+         https://act.easy.dans.knaw.nl/sword2/collection/1 myuser mypassword 50000 src/main/resources/examples/medium 
 
+### SequenceXxx.java
 
-### A bag with fetch.txt
+It is possible to specify that a new bag is an update of an existing dataset. The SequenceXxx example demonstrate the sub-protocol used. The
+command lines for the examples are almost exactly the same as for the ones concerned with a single deposit. The difference is that multiple
+bag directories should be passed each representing a revision of the dataset, e.g.,
 
-A bag may contain a file called `fetch.txt`, which contains references to files that belong to this bag but are not present. To run an example
-with this kind of bag, zip `example-bag-with-fetch` to `example.zip` and execute the following command (the same as for `SimpleDeposit`),
-of course after filling in the username and password of your SWORD-enabled EASY-account.
-                                                                                                      
-    java -cp bin/easy-sword2-dans-examples.jar nl.knaw.dans.easy.sword2examples.SimpleDeposit \
-        examples/example.zip https://act.easy.dans.knaw.nl/sword2/collection/1 <username> <password>
-
+    java -cp bin/easy-sword2-dans-examples.jar nl.knaw.dans.easy.sword2examples.SequenceContinuedDeposit \
+         https://act.easy.dans.knaw.nl/sword2/collection/1 myuser mypassword 50000 src/main/resources/examples/revision01 \
+          src/main/resources/examples/revision02 src/main/resources/examples/revision03
 
 ### Running from the Project Directory
 
-Alternatively, you may run the example programs from the command line in the maven project. Open a command line in the root
+Instead of unarchiving the `tar.gz` file, you may choose to run the example programs from the command line in the maven project. Open a command line in the root
 of the maven project and then type the following (for `SimpleDeposit`): 
 
     mvn clean install
     mvn dependency:copy-dependencies
     java -cp "target/dependency/*:target/easy-sword2-dans-examples.jar" nl.knaw.dans.easy.sword2examples.SimpleDeposit \
-       src/main/resources/examples/example.zip https://act.easy.dans.knaw.nl/sword2/collection/1 <username> <password>
+       https://act.easy.dans.knaw.nl/sword2/collection/1 myuser mypassword src/main/resources/examples/medium
 
-This of course assumes that you have first zipped the example bag to the `src/main/resources/examples` sub-directory.
 
 
