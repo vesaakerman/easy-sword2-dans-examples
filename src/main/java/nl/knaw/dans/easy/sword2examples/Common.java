@@ -23,11 +23,13 @@ import gov.loc.repository.bagit.writer.impl.FileSystemWriter;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.model.ZipParameters;
 import org.apache.abdera.Abdera;
+import org.apache.abdera.i18n.iri.IRI;
 import org.apache.abdera.model.Category;
 import org.apache.abdera.model.Document;
 import org.apache.abdera.model.Element;
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.Feed;
+import org.apache.abdera.model.Link;
 import org.apache.abdera.parser.Parser;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.FileUtils;
@@ -53,6 +55,7 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.net.URI;
 import java.security.DigestInputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -110,18 +113,52 @@ public class Common {
                 }
                 else if (state.equals("ARCHIVED")) {
                     List<Entry> entries = statement.getEntries();
-                    System.out.print("SUCCESS. ");
+                    System.out.println("SUCCESS. ");
                     if (entries.size() == 1) {
-                        System.out.print("Deposit has been archived at: <" + entries.get(0).getId() + ">. ");
+                        System.out.print("Deposit has been archived at: [" + entries.get(0).getId() + "]. ");
+
+                        List<String> dois = getDois(entries.get(0));
+                        int numDois = dois.size();
+                        switch (numDois) {
+                            case 1: System.out.print(" With DOI: [" + dois.get(0) + "]. ");
+                                    break;
+                            case 0: System.out.println("WARNING: No DOI found");
+                                break;
+
+                            default:
+                                System.out.println("WARNING: More than one DOI found (" + numDois + "): ");
+                                for (String doi: dois) {
+                                    System.out.print(" [" + doi + "]");
+                                }
+                                System.out.println();
+                                break;
+                        }
+                    } else {
+                        System.out.println("WARNING: Found (" + entries.size() + ") entry's; should be ONE and only ONE");
                     }
                     String stateText = states.get(0).getText();
-                    System.out.println("Dataset landing page will be located at: " + stateText);
+                    System.out.println("Dataset landing page will be located at: [" + stateText + "].");
                     System.out.println("Complete statement follows:");
                     System.out.println(bodyText);
                     return entries.get(0).getId().toURI();
                 }
             }
         }
+    }
+
+    public static List<String> getDois(Entry entry) {
+        List<String> dois = new ArrayList<String>();
+
+        List<Link> links = entry.getLinks("self");
+        for(Link link: links) {
+            IRI href = link.getHref();
+            if (href.getHost().equals("doi.org")) {
+                String path = href.getPath();
+                String doi = path.substring(1); // skip leading '/'
+                dois.add(doi);
+            }
+        }
+        return dois;
     }
 
     private static byte[] readChunk(InputStream is, int size) throws Exception {
