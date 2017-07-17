@@ -92,6 +92,10 @@ public class Common {
             Thread.sleep(10000);
             System.out.print("Checking deposit status ... ");
             response = http.execute(new HttpGet(statUri));
+            if (response.getStatusLine().getStatusCode() != 200) {
+                System.out.println("Stat-IRI returned " + response.getStatusLine().getStatusCode());
+                System.exit(1);
+            }
             bodyText = readEntityAsString(response.getEntity());
             Feed statement = parse(bodyText);
             List<Category> states = statement.getCategories("http://purl.org/net/sword/terms/state");
