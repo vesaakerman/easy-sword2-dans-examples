@@ -117,8 +117,8 @@ of the maven project and then type the following (for `SimpleDeposit`):
 
     mvn clean install
     mvn dependency:copy-dependencies
-    java -cp "target/dependency/*:target/easy-sword2-dans-examples.jar" nl.knaw.dans.easy.sword2examples.SimpleDeposit \
+    java -cp "target/dependency/*:target/easy-sword2-dans-examples-1.1.0-SNAPSHOT.jar" nl.knaw.dans.easy.sword2examples.SimpleDeposit \
        https://act.easy.dans.knaw.nl/sword2/collection/1 myuser mypassword src/main/resources/examples/medium
 
-
+(**NOTE**: make the version in the jar file name is the same as the version of the project)
 
