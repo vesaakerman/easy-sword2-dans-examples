@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files xmlns:dcterms="http://purl.org/dc/terms/" xmlns="http://easy.dans.knaw.nl/schemas/bag/metadata/files/"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://easy.dans.knaw.nl/schemas/bag/metadata/files/ https://easy.dans.knaw.nl/schemas/bag/metadata/files/files.xsd">
+    <file filepath="data/README.md">
+        <dcterms:format>text/plain</dcterms:format>
+    </file>
+    <file filepath="data/random images/image01.png">
+        <dcterms:title>The first image</dcterms:title>
+        <dcterms:description>This description will be archived, but not displayed anywhere in the Web-UI</dcterms:description>
+        <dcterms:format>image/png</dcterms:format>
+        <dcterms:created>2016-11-11</dcterms:created>
+    </file>
+    <file filepath="data/random images/image02.jpeg">
+        <dcterms:format>image/jpeg</dcterms:format>
+        <dcterms:created>2016-11-10</dcterms:created>
+    </file>
+    <file filepath="data/random images/image03.jpeg">
+        <dcterms:format>image/jpeg</dcterms:format>
+        <dcterms:created>2016-11-10</dcterms:created>
+    </file>
+    <file filepath="data/a/deeper/path/With some file.txt">
+        <dcterms:format>text/plain</dcterms:format>
+        <dcterms:created>2016-11-09</dcterms:created>
+    </file>
+    <file filepath="data/accessibilities/anonymous.txt">
+        <dcterms:format>text/plain</dcterms:format>
+        <dcterms:created>2016-11-09</dcterms:created>
+        <accessibleToRights>ANONYMOUS</accessibleToRights>
+    </file>
+    <file filepath="data/accessibilities/group.txt">
+        <dcterms:format>text/plain</dcterms:format>
+        <dcterms:created>2016-11-09</dcterms:created>
+        <accessibleToRights>RESTRICTED_GROUP</accessibleToRights>
+    </file>
+    <file filepath="data/accessibilities/known.txt">
+        <dcterms:format>text/plain</dcterms:format>
+        <dcterms:created>2016-11-09</dcterms:created>
+        <accessibleToRights>KNOWN</accessibleToRights>
+    </file>
+    <file filepath="data/accessibilities/request.txt">
+        <dcterms:format>text/plain</dcterms:format>
+        <dcterms:created>2016-11-09</dcterms:created>
+        <accessibleToRights>RESTRICTED_REQUEST</accessibleToRights>
+    </file>
+    <file filepath="data/visibilities/anonymous.txt">
+        <dcterms:format>text/plain</dcterms:format>
+        <dcterms:created>2016-11-09</dcterms:created>
+        <visibleToRights>ANONYMOUS</visibleToRights>
+    </file>
+    <file filepath="data/visibilities/known.txt">
+        <dcterms:format>text/plain</dcterms:format>
+        <dcterms:created>2016-11-09</dcterms:created>
+        <visibleToRights>KNOWN</visibleToRights>
+    </file>
+    <file filepath="data/visibilities/none.txt">
+        <dcterms:format>text/plain</dcterms:format>
+        <dcterms:created>2016-11-09</dcterms:created>
+        <visibleToRights>NONE</visibleToRights>
+    </file>
+</files>
+
