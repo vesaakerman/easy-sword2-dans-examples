@@ -54,6 +54,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.security.DigestInputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -215,6 +216,7 @@ public class Common {
     public static void zipDirectory(File dir, File zipFile) throws Exception {
         if(zipFile.exists()) zipFile.delete();
         ZipFile zf = new ZipFile(zipFile);
+        zf.setFileNameCharset(StandardCharsets.UTF_8.name());
         ZipParameters parameters = new ZipParameters();
         zf.addFolder(dir, parameters);
     }
