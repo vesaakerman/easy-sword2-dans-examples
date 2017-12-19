@@ -86,7 +86,7 @@ To change the bag or make your own bags see [this wiki page].
 ### SimpleDeposit.java
 
 To run the `SimpleDeposit` example, execute the following command, of course after filling in the username and password of your SWORD-enabled
-EASY-account. For example:
+EASY-account (instead of "myuser" and "mypassword"). For example:
 
     java -cp bin/easy-sword2-dans-examples.jar nl.knaw.dans.easy.sword2examples.SimpleDeposit \
         https://act.easy.dans.knaw.nl/sword2/collection/1 myuser mypassword src/main/resources/examples/medium
@@ -115,10 +115,12 @@ bag directories should be passed each representing a revision of the dataset, e.
 Instead of unarchiving the `tar.gz` file, you may choose to run the example programs from the command line in the maven project. Open a command line in the root
 of the maven project and then type the following (for `SimpleDeposit`): 
 
-    mvn clean install
-    mvn dependency:copy-dependencies
-    java -cp "target/dependency/*:target/easy-sword2-dans-examples-1.1.0-SNAPSHOT.jar" nl.knaw.dans.easy.sword2examples.SimpleDeposit \
-       https://act.easy.dans.knaw.nl/sword2/collection/1 myuser mypassword src/main/resources/examples/medium
+    ./run.sh Simple https://act.easy.dans.knaw.nl/sword2/collection/1 myuser mypassword src/main/resources/examples/medium
+    
+This will execute the helperscript `run.sh` which uses a Maven plug-in to run the program using the artifacts in the `target` directory.
+You can select a different example program by replacing `Simple` with `Continued`, `SequenceSimple`, etc. The examples that use 
+continued depositing require an extra argument, the chunk size, before the bag directory, for example:
 
-(**NOTE**: make the version in the jar file name is the same as the version of the project)
-
+    ./run.sh Continued https://act.easy.dans.knaw.nl/sword2/collection/1 myuser mypassword 512000 src/main/resources/examples/medium
+    
+For the `SequenceXxx`-examples, the sequence of bags to deposit is the variable number of arguments at the end of the argument list.    
