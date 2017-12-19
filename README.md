@@ -115,6 +115,7 @@ bag directories should be passed each representing a revision of the dataset, e.
 Instead of unarchiving the `tar.gz` file, you may choose to run the example programs from the command line in the maven project. Open a command line in the root
 of the maven project and then type the following (for `SimpleDeposit`): 
 
+    mvn clean install # Only necessary if the code was not previously built.
     ./run.sh Simple https://act.easy.dans.knaw.nl/sword2/collection/1 myuser mypassword src/main/resources/examples/medium
     
 This will execute the helperscript `run.sh` which uses a Maven plug-in to run the program using the artifacts in the `target` directory.
