@@ -21,7 +21,7 @@
     <parent>
         <groupId>nl.knaw.dans.shared</groupId>
         <artifactId>dans-prototype</artifactId>
-        <version>1.62</version>
+        <version>1.64</version>
     </parent>
     <groupId>nl.knaw.dans.easy</groupId>
     <artifactId>easy-sword2-dans-examples</artifactId>
@@ -50,6 +50,7 @@
         <dependency>
             <groupId>gov.loc</groupId>
             <artifactId>bagit</artifactId>
+            <version>4.11.0</version>
         </dependency>
         <dependency>
             <groupId>net.lingala.zip4j</groupId>
