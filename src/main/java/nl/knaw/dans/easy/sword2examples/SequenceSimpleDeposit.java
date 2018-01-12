@@ -43,7 +43,7 @@ public class SequenceSimpleDeposit {
 
     for(int i = 1; i < bagNames.length; ++i) {
       File bagDir = new File(bagNames[i]);
-      tempCopy = Common.copyToTarget(baseBagDir);
+      tempCopy = Common.copyToTarget(bagDir);
       Common.setBagIsVersionOf(tempCopy, baseUri);
       SimpleDeposit.depositPackage(tempCopy, colIri, uid, pw);
     }
