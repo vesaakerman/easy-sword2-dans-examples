@@ -26,6 +26,19 @@ USER=$3
 PASSWORD=$4
 JARFILE=$(ls -1 target/*SNAPSHOT.jar)
 
+if (( $# < 5 )); then
+ echo "Usage: ./run.sh <program> <COL-IRI> <user> <password> [<chunksize>] <bagdir>..."
+ echo "Where:"
+ echo "<program> = one of Simple,Continued,SequenceSimple,SequenceContinued"
+ echo "<COL-IRI> = the collection IRI to post to"
+ echo "<user> = EASY user account"
+ echo "<password> = password for <user>"
+ echo "<chunksize> = size in byte of each chunk (only for the Continued variants"
+ echo "<bagdir> = one bag directory to send or multiple (only for Sequence variants"
+ exit
+fi
+
+
 if [[ "$PROGRAM" =~ ^.*Continued$ ]]; then
     CHUNKSIZE=$5
     BAGDIRS=${@:6}
