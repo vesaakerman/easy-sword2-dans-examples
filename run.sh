@@ -33,8 +33,8 @@ if (( $# < 5 )); then
  echo "<COL-IRI> = the collection IRI to post to"
  echo "<user> = EASY user account"
  echo "<password> = password for <user>"
- echo "<chunksize> = size in byte of each chunk (only for the Continued variants"
- echo "<bagdir> = one bag directory to send or multiple (only for Sequence variants"
+ echo "<chunksize> = size in byte of each chunk (only for the Continued variants)"
+ echo "<bagdir> = one bag directory to send or multiple (only for Sequence variants)"
  exit
 fi
 
