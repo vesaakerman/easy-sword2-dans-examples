@@ -32,7 +32,7 @@ public class SimpleDeposit {
 
     /**
      * Sends a bag to the easy-sword2 service and tracks its status until it is archived or failure is reported.
-     *
+     * 
      * @param args
      *        0. zipped bag to send, 1. collection URL (Col-IRI), 2. EASY user name, 3. EASY password
      */

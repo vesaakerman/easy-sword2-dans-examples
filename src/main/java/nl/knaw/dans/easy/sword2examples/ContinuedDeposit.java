@@ -57,7 +57,8 @@ public class ContinuedDeposit {
 
         // 2. Post first chunk bag to Col-IRI
         CloseableHttpClient http = Common.createHttpClient(colIri.toURI(), uid, pw);
-        CloseableHttpResponse response = Common.sendChunk(dis, chunkSize, "POST", colIri.toURI(),  "bag.zip.1", "application/octet-stream", http, chunkSize < zipFile.length());
+        CloseableHttpResponse response = Common.sendChunk(dis, chunkSize, "POST", colIri.toURI(), "bag.zip.1", "application/octet-stream", http,
+                chunkSize < zipFile.length());
 
         // 3. Check the response. If transfer corrupt (MD5 doesn't check out), report and exit.
         String bodyText = Common.readEntityAsString(response.getEntity());
@@ -76,7 +77,7 @@ public class ContinuedDeposit {
 
         int remaining = (int) zipFile.length() - chunkSize;
         int count = 2;
-        while(remaining > 0) {
+        while (remaining > 0) {
             System.out.print(String.format("POST-ing chunk of %d bytes to SE-IRI (remaining: %d) ... ", chunkSize, remaining));
             response = Common.sendChunk(dis, chunkSize, "POST", seIri, "bag.zip." + count++, "application/octet-stream", http, remaining > chunkSize);
             remaining -= chunkSize;
