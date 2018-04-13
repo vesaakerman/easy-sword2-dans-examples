@@ -3,3 +3,10 @@ f50380cd3a4ae5b8ea3d524a4b1e8582eca50893  data/README.md
 f100629544e98ad21503b04a276fe6185cb4e9d2  data/random images/image01.png
 f750a66151421a62521be6495684fb8384cb4aa0  data/a/deeper/path/With some file.txt
 4ae4fb20ee161b8026a468160553e623dcea4914  data/random images/image02.jpeg
+3f822b34089e1da7a490536e50c15a28c45ab4bb  data/visibilities/known.txt
+d424a7651d651e8c512f18eadf7eaf86ccc84b2b  data/accessibilities/request.txt
+82e24a7ae6d6d09b2397e4d2852346eec4572c11  data/accessibilities/group.txt
+4f5ea58e1c7e617f2190f7d9cf33637bc14aae02  data/accessibilities/anonymous.txt
+f375ad2556c094df000af13f77e40716403fc62f  data/accessibilities/known.txt
+96e8d782cfe5eb770061ad58cc371488c8b63b1c  data/visibilities/anonymous.txt
+d632dba903a82d940aff3ef43d7c907439ec589b  data/visibilities/none.txt

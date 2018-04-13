@@ -1,5 +1,0 @@
-160cd36cdfbf0f10d4d1859a702f5986  data/README.md
-c9fa0cb8b3a06c0a33a97650133db965  data/random images/image03.jpeg
-4beb128a1c73460ffaa512afd2348fdc  data/random images/image01.png
-87aad37626ecd9ee2eea785058eb2772  data/random images/image02.jpeg
-3a97f9f9c07709b49e201f7d6f439c6b  data/bit.jpg

@@ -1,4 +1,0 @@
-3eb80359c2dc1fd45e57947fa48a1a766db5bfe0  data/path/to/file.txt
-f795448a2ebc78e66b8537a8bbf4e1a7514498d5  data/quicksort.hs
-6ee4c9027f781da2aaa9fe4c3f95574058828553  data/other/path/to/LorumIpsum.md
-380724744b33f8296256026d78f75ed98912f760  data/path/bagit_spec.pdf
